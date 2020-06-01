@@ -13,15 +13,16 @@ import { signupRouter } from './routes/signup';
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
-// not signing cookie to allow for easier interop use. jwt is payload which is signed
+
+// typescript thinks this may not be defined without this check
+if (!process.env.RELOTO_COOKIE_SECRET) {
+    throw new Error('Cookie secret not defined in environment');
+}
+// not signing cookie allows for easier interop use (with JavaSpring for example). jwt is payload which is signed. still signing for now
 app.use(cookieSession({
-    signed: false,
+    keys: [process.env.RELOTO_COOKIE_SECRET],
     secure: process.env.NODE_ENV !== 'test'
 }));
-
-// app.get('/api/users/currentuser', (req, res) => {
-//     res.send('Hello World');
-// })
 
 app.use(currentUserRouter);
 app.use(signinRouter);
