@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reloto-auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reloto-auth
+  template:
+    metadata:
+      labels:
+        app: reloto-auth
+    spec:
+      containers:
+        - name: reloto-auth
+          image: conorburke/reloto-auth
+          env:
+            - name: RELOTO_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-jwt-secret
+                  key: RELOTO_JWT_KEY
+            - name: RELOTO_MONGO_URI_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-mongo-uri-auth
+                  key: RELOTO_MONGO_URI_AUTH
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reloto-auth-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: reloto-auth
+  ports:
+    - name: reloto-auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
