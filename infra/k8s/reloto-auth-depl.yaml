@@ -21,6 +21,11 @@ spec:
                 secretKeyRef:
                   name: reloto-jwt-secret
                   key: RELOTO_JWT_KEY
+            - name: RELOTO_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-cookie-secret
+                  key: RELOTO_COOKIE_SECRET
             - name: RELOTO_MONGO_URI_AUTH
               valueFrom:
                 secretKeyRef:
