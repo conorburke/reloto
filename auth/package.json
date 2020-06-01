@@ -8,6 +8,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "jest --watchAll --no-cache",
+    "test:ci": "jest",
     "start": "ts-node-dev --poll src/index.ts"
   },
   "jest": {
