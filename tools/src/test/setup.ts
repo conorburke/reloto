@@ -8,14 +8,20 @@ import { app } from '../app';
 declare global {
     namespace NodeJS {
         interface Global {
-            signup(): Promise<string[]>
+            signup(): string[]
         }
     }
 }
 
+// this looks for an identical named file in the __mocks__ dir in namespace where file is located for any file that uses the nats-wrapper
+jest.mock('../nats-wrapper');
+
+
 let mongo: any;
 
 beforeAll(async () => {
+    process.env.JWT_KEY='test';
+
     mongo = new MongoMemoryServer();
     const mongoUri = await mongo.getUri();
 
@@ -26,6 +32,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+    jest.clearAllMocks();
     const collections = await mongoose.connection.db.collections();
 
     for (let collection of collections) {
@@ -39,20 +46,9 @@ afterAll(async () => {
 });
 
 // global helper function for test environment only
-global.signup = async () => {
-    // const email = 'test@test.com';
-    // const password = '12345678';
-
-    // const response = await request(app)
-    //     .post('/api/users/signup')
-    //     .send({ email, password })
-    //     .expect(201);
-
-    // const cookie = response.get('Set-Cookie');
-
-    // return cookie;
-     // build a jwt payload {id, email}
-     const payload = {
+global.signup = () => {
+    // build a jwt payload {id, email}
+    const payload = {
         //use a random id to be able to test multiple users
         id: new mongoose.Types.ObjectId().toHexString(),
         email: 'test@test.com'
