@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { app } from './app';
 
 const start = async () => {
-    console.log('MONGO URI', process.env.RELOTO_MONGO_URI_AUTH);
     if (!process.env.RELOTO_JWT_KEY) {
         throw new Error('RELOTO_JWT_KEY must be defined');
     }
