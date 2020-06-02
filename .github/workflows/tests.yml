@@ -10,3 +10,4 @@ jobs:
 #      extract code out of project 
      - uses: actions/checkout@v2
      - run: cd auth && npm install && npm run test:ci 
+     - run: cd tools && npm install && npm run test:ci
