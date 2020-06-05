@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reloto-orders-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reloto-orders
+  template:
+    metadata:
+      labels:
+        app: reloto-orders
+    spec:
+      containers:
+        - name: reloto-orders
+          image: conorburke/reloto-orders
+          env:
+            - name: RELOTO_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-jwt-secret
+                  key: RELOTO_JWT_KEY
+            - name: RELOTO_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-cookie-secret
+                  key: RELOTO_COOKIE_SECRET
+            - name: RELOTO_MONGO_URI_ORDERS
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-mongo-uri-orders
+                  key: RELOTO_MONGO_URI_ORDERS
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: reloto
+            #uses the pod name as the client id
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reloto-orders-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: reloto-orders
+  ports:
+    - name: reloto-orders
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
