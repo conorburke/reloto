@@ -13,4 +13,5 @@ Creating a new service:
 6. Add the appropriate config to the skaffold.dev directory at the project root. Again you can probably use template.
 7. Add the appropriate CI script to .github/workflows/tests.yml
 8. You may need to add listeners in the other services for the event flow of your service. For example, the Orders service listens for CUD operations from the Tools service.
+9. Add the proper routing config to the ingress-srv.yaml so NGINX can hit the correct endpoint.
 
