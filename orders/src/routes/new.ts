@@ -8,7 +8,8 @@ import { Order } from '../models/order';
 import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
-const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+// an order will expire in 10 minutes, freeing a tool to be reserved by another user
+const EXPIRATION_WINDOW_SECONDS = 10 * 60;
 
 const router = express.Router();
 
