@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@reloto/common": "^0.1.5",
+    "@reloto/common": "^0.1.6",
     "@types/bull": "^3.13.0",
     "bull": "^3.14.0",
     "node-nats-streaming": "^0.3.2",
