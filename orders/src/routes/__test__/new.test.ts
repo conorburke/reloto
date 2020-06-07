@@ -7,6 +7,9 @@ import { Tool } from '../../models/tool';
 import { cookie } from 'express-validator';
 import { natsWrapper } from '../../nats-wrapper';
 
+const loanStart = "2020-06-15T14:00:00.000Z";
+const loanEnd = "2020-06-15T16:00:00.000Z";
+
 it('returns an error if the tool DNE', async () => {
     const toolId = mongoose.Types.ObjectId();
 
@@ -14,7 +17,9 @@ it('returns an error if the tool DNE', async () => {
         .post('/api/orders')
         .set('Cookie', global.signup())
         .send({
-            toolId
+            toolId,
+            loanStart,
+            loanEnd
         })
         .expect(404);
 });
@@ -32,6 +37,8 @@ it('returns an error if the tool is reserved', async () => {
         customerId: 'randomuserid',
         status: OrderStatus.Created,
         expiresAt: new Date(),
+        loanStart: new Date(loanStart),
+        loanEnd: new Date(loanEnd),
         tool
     });
     await order.save();
@@ -39,7 +46,12 @@ it('returns an error if the tool is reserved', async () => {
     await request(app)
         .post('/api/orders')
         .set('Cookie', global.signup())
-        .send({ toolId: tool.id})
+        .send({ 
+            toolId: tool.id,
+            // have the request coincide with the order built above
+            loanStart: "2020-06-15T15:00:00.000Z",
+            loanEnd: "2020-06-15T18:00:00.000Z"
+        })
         .expect(400)
 });
 
@@ -54,7 +66,11 @@ it('reserves a tool if allowed', async () => {
     await request(app)
         .post('/api/orders')
         .set('Cookie', global.signup())
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+         })
         .expect(201);
 });
 
@@ -72,7 +88,11 @@ it('emits an order created event', async () => {
     await request(app)
         .post('/api/orders')
         .set('Cookie', global.signup())
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+         })
         .expect(201);
 
     expect(natsWrapper.client.publish).toHaveBeenCalled();

@@ -16,7 +16,7 @@ const start = async () => {
 
     try {
         // third argument, url, is based off of the k8s file for nats
-        // await natsWrapper.connect('ticketing', 'randomfornow', 'http://nats-srv:4222');
+        // await natsWrapper.connect('reloto', 'randomfornow', 'http://nats-srv:4222');
         await natsWrapper.connect(process.env.NATS_CLUSTER_ID, process.env.NATS_CLIENT_ID, process.env.NATS_URL);
         // handle graceful shutdown
         // have it here so that we don't have shutdown functionallity hidden

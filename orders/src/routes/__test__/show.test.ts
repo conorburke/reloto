@@ -6,6 +6,9 @@ import { Order, OrderStatus } from '../../models/order';
 import { Tool } from '../../models/tool';
 import { cookie } from 'express-validator';
 
+const loanStart = "2020-06-15T14:00:00.000Z";
+const loanEnd = "2020-06-15T16:00:00.000Z";
+
 it('fetches the order', async () => {
     const tool = Tool.build({
         title: 'tool1',
@@ -20,7 +23,11 @@ it('fetches the order', async () => {
     const { body: createdOrder } = await request(app)
         .post('/api/orders')
         .set('Cookie', user)
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
 
     const {body: fetchedOrder} = await request(app)
@@ -47,7 +54,11 @@ it('returns an error if a user tries to fetch another users order', async () => 
     const { body: createdOrder } = await request(app)
         .post('/api/orders')
         .set('Cookie', user)
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
 
     const {body: fetchedOrder} = await request(app)

@@ -7,6 +7,9 @@ import { Tool } from '../../models/tool';
 import { cookie } from 'express-validator';
 import { natsWrapper } from '../../nats-wrapper';
 
+const loanStart = "2020-06-15T14:00:00.000Z";
+const loanEnd = "2020-06-15T16:00:00.000Z";
+
 it('marks an order as cancelled', async () => {
     const tool = Tool.build({
         title: 'tool1',
@@ -21,7 +24,11 @@ it('marks an order as cancelled', async () => {
     const { body: createdOrder } = await request(app)
         .post('/api/orders')
         .set('Cookie', user)
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
 
      await request(app)
@@ -50,7 +57,11 @@ it('emits an order cancelled event', async () => {
     const { body: createdOrder } = await request(app)
         .post('/api/orders')
         .set('Cookie', user)
-        .send({ toolId: tool.id })
+        .send({ 
+            toolId: tool.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
 
      await request(app)

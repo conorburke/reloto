@@ -21,6 +21,8 @@ const setup = async () => {
         status: OrderStatus.Created,
         customerId: 'random',
         expiresAt: new Date(),
+        loanStart: new Date("2020-06-15T14:00:00.000Z"),
+        loanEnd: new Date("2020-06-15T16:00:00.000Z"),
         tool
     });
     await order.save();

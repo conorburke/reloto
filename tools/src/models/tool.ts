@@ -99,7 +99,7 @@ toolSchema.statics.build = (attrs: ToolAttrs) => {
     return new Tool(attrs);
 }
 
-const Tool = mongoose.model<ToolDoc, ToolModel>('Ticket', toolSchema);
+const Tool = mongoose.model<ToolDoc, ToolModel>('Tool', toolSchema);
 
 export { Tool };
 
