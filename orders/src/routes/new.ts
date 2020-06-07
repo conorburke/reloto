@@ -15,12 +15,25 @@ const router = express.Router();
 
 router.post('/api/orders', requireAuth, [
     // this mongoose adds a tight coupling to tools db. should delete
-    body('toolId').not().isEmpty().custom((input: string) => mongoose.Types.ObjectId.isValid(input)).withMessage('ToolId must be provided')
+    body('toolId').not().isEmpty().custom((input: string) => mongoose.Types.ObjectId.isValid(input)).withMessage('ToolId must be provided'),
+    body('loanStart').not().isEmpty().withMessage('loanStart must be provided'),
+    body('loanEnd').not().isEmpty().withMessage('loanEnd must be provided'),
+    body('loanStart').isISO8601().toDate().withMessage('loanStart must be in proper datetime format'),
+    body('loanEnd').isISO8601().toDate().withMessage('loanEnd must be in proper datetime format'),
     ],
     validateRequest,
     async (req: Request, res: Response) => {
 
         const { toolId } = req.body;
+        const loanStart = new Date(req.body.loanStart);
+        const loanEnd = new Date(req.body.loanEnd);
+
+        // orders must be for at least one hour
+        const hour = 60 * 60 * 1000;
+        const tempLoanStart = new Date(loanStart.getTime() + hour);
+        if (loanEnd < tempLoanStart) {
+            throw new Error('loanEnd must be greater than loanStart by at least one hour.');
+        }
 
         // find the tool the user is trying to locate
         const tool = await Tool.findById(toolId);
@@ -30,9 +43,9 @@ router.post('/api/orders', requireAuth, [
         }
 
         // make sure the tool is not already reserved.
-        const isReserved = await tool.isReserved();
+        const isReserved = await tool.isReserved(new Date(loanStart), new Date(loanEnd));
         if (isReserved) {
-            throw new BadRequestError('Tool is already reserved');
+            throw new BadRequestError('Tool is already reserved for this time period.');
         }
 
         // calculate the expiration date for this order
@@ -44,6 +57,8 @@ router.post('/api/orders', requireAuth, [
             customerId: req.currentUser!.id,
             status: OrderStatus.Created,
             expiresAt: expiration,
+            loanStart: new Date(loanStart),
+            loanEnd: new Date(loanEnd),
             tool 
         });
 

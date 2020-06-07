@@ -25,7 +25,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
         await tool.save();
         // need to update the tool version to keep the services in sync
         // don't want to do this simple client import because will make testing more difficult (the natsWrapper is mocked in tests, so don't import it in the actual file)
-        // new TicketUpdatedPublisher(natsWrapper.client)
+        // new ToolUpdatedPublisher(natsWrapper.client)
 
         await new ToolUpdatedPublisher(this.client).publish({
             id: tool.id,

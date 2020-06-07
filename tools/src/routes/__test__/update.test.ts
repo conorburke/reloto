@@ -160,12 +160,12 @@ it('updates the tool if inputs are valid', async () => {
         })
         .expect(200);
         
-    const ticketResponse = await request(app)
+    const toolResponse = await request(app)
         .get(`/api/tools/${response.body.id}`)
         .send();
 
-    expect(ticketResponse.body.title).toEqual('tool_diff');
-    expect(ticketResponse.body.price).toEqual(20);    
+    expect(toolResponse.body.title).toEqual('tool_diff');
+    expect(toolResponse.body.price).toEqual(20);    
 });
 
 it('publishes an event', async () => {

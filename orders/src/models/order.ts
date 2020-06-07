@@ -8,6 +8,8 @@ interface OrderAttrs {
     customerId: string;
     status: OrderStatus;
     expiresAt: Date;
+    loanStart: Date;
+    loanEnd: Date;
     tool: ToolDoc;
 }
 
@@ -17,6 +19,8 @@ interface OrderDoc extends mongoose.Document {
     customerId: string;
     status: OrderStatus;
     expiresAt: Date;
+    loanStart: Date;
+    loanEnd: Date;
     tool: ToolDoc;
     version: number;
 }
@@ -40,6 +44,14 @@ const orderSchema = new mongoose.Schema({
     },
     expiresAt: {
         type: mongoose.Schema.Types.Date
+    },
+    loanStart: {
+        type: mongoose.Schema.Types.Date,
+        required: true
+    },
+    loanEnd: {
+        type: mongoose.Schema.Types.Date,
+        required: true
     },
     tool: {
         type: mongoose.Schema.Types.ObjectId,

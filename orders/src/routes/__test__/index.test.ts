@@ -15,7 +15,10 @@ const buildTool = async () => {
     await tool.save();
 
     return tool;
-}
+};
+
+const loanStart = "2020-06-15T14:00:00.000Z";
+const loanEnd = "2020-06-15T16:00:00.000Z";
 
 it('fetches orders for the current user', async () => {
     // create three tools, one reserved by one user and two reserved by another user
@@ -29,19 +32,30 @@ it('fetches orders for the current user', async () => {
     await request(app)
         .post('/api/orders')
         .set('Cookie', user1)
-        .send({ toolId: tool1.id})
+        .send({ 
+            toolId: tool1.id,
+            loanStart,
+            loanEnd})
         .expect(201);
     
     const { body: body1 } = await request(app)
         .post('/api/orders')
         .set('Cookie', user2)
-        .send({ toolId: tool2.id})
+        .send({ 
+            toolId: tool2.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
     
     const { body: body2 } = await request(app)
         .post('/api/orders')
         .set('Cookie', user2)
-        .send({ toolId: tool3.id})
+        .send({ 
+            toolId: tool3.id,
+            loanStart,
+            loanEnd
+        })
         .expect(201);
 
     const response = await request(app)

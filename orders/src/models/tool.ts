@@ -13,7 +13,7 @@ export interface ToolDoc extends mongoose.Document {
     version: number;
     title: string;
     price: number;
-    isReserved(): Promise<boolean>;
+    isReserved(loanStart: Date, loanEnd: Date): Promise<boolean>;
 }
 
 interface ToolModel extends mongoose.Model<ToolDoc> {
@@ -62,18 +62,26 @@ toolSchema.statics.findByEvent = (event: { id: string, version: number}) => {
     });
 }
 
-
-toolSchema.methods.isReserved = async function() {
-    // this  is the tool document that we called 'isReserved' on
-    
+toolSchema.methods.isReserved = async function(loanStart: Date, loanEnd: Date) {
+    // 'this'  is the tool document that we called 'isReserved' on
+    // check to see if a non-cancelled order has overlapping time range of prospective order
     const existingOrder = await Order.findOne({
         tool: this,
         status: {
             $in: [OrderStatus.Created, OrderStatus.AwaitingPayment, OrderStatus.Complete]
-        }
+        },
+        $and: [
+            {
+                loanStart: {
+                    $lt: loanEnd
+                },
+                loanEnd: {
+                    $gt: loanStart
+                }
+            },
+        ]
     })
 
-    // bang bang to return boolean
     return !!existingOrder;
 }
 
