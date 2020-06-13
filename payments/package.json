@@ -1,7 +1,7 @@
 {
-  "name": "tools",
+  "name": "payments",
   "version": "1.0.0",
-  "description": "Service for creating/updating/deleting Tool objects",
+  "description": "Service for creating Payment objects",
   "main": "index.ts",
   "scripts": {
     "test": "jest --watchAll --no-cache",
@@ -35,6 +35,7 @@
     "mongoose": "^5.9.13",
     "mongoose-update-if-current": "^1.4.0",
     "node-nats-streaming": "^0.3.2",
+    "stripe": "^8.60.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.8.3"
   },

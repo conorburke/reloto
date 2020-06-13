@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reloto-payments-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reloto-payments
+  template:
+    metadata:
+      labels:
+        app: reloto-payments
+    spec:
+      containers:
+        - name: reloto-payments
+          image: conorburke/reloto-payments
+          env:
+            - name: RELOTO_JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-jwt-secret
+                  key: RELOTO_JWT_KEY
+            - name: RELOTO_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-cookie-secret
+                  key: RELOTO_COOKIE_SECRET
+            - name: RELOTO_MONGO_URI_PAYMENTS
+              valueFrom:
+                secretKeyRef:
+                  name: reloto-mongo-uri-payments
+                  key: RELOTO_MONGO_URI_PAYMENTS
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: reloto
+            #uses the pod name as the client id
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secret-key
+                  key: STRIPE_SECRET_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reloto-payments-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: reloto-payments
+  ports:
+    - name: reloto-payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
