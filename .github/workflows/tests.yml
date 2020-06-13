@@ -12,3 +12,4 @@ jobs:
      - run: cd auth && npm install && npm run test:ci 
      - run: cd tools && npm install && npm run test:ci
      - run: cd orders && npm install && npm run test:ci
+     - run: cd payments && npm install && npm run test:ci

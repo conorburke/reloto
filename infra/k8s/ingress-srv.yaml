@@ -22,6 +22,10 @@ spec:
             backend:
               serviceName: reloto-orders-srv
               servicePort: 3000
+          - path: /api/payments/?(.*)
+            backend:
+              serviceName: reloto-payments-srv
+              servicePort: 3000
           # - path: /?(.*)
           #   backend:
           #     serviceName: client-srv
