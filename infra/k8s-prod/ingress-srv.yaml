@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
-    - host: reloto.app
+    - host: www.reloto.app
       http:
         paths:
           - path: /api/users/?(.*)
