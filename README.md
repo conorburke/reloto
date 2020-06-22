@@ -15,3 +15,22 @@ Creating a new service:
 8. You may need to add listeners in the other services for the event flow of your service. For example, the Orders service listens for CUD operations from the Tools service.
 9. Add the proper routing config to the ingress-srv.yaml so NGINX can hit the correct endpoint.
 
+
+Kubernetes Contexts
+
+doctl is used to manage Digital Ocean cluster.
+
+brew install doctl
+
+to authenticate:
+doctl auth init (will be prompted for api key)
+
+add Digital Ocean kubectl cluster info
+doctl kubernetes cluster kubeconfig save <cluster_name>
+
+lists k8s contexts
+kubectl config view
+
+set current context
+kubectl congid use-context <context_name>
+
