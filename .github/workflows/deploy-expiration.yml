@@ -24,4 +24,4 @@ jobs:
           token: ${{ secrets.DOCTL_KEY }}
       - run: doctl kubernetes cluster kubeconfig save reloto
 #       find the deployment name from the infra file
-      - run: kubectl rollout restart deployment reloto-expiration-depl
+      - run: kubectl rollout restart deployment expiration-depl
