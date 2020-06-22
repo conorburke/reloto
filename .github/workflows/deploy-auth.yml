@@ -19,3 +19,9 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - run: docker push conorburke/reloto-auth
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DOCTL_KEY }}
+      - run: doctl kubernetes cluster kubeconfig save reloto
+#       find the deployment name from the infra file
+      - run: kubectl rollout restart deployment reloto-auth-depl
