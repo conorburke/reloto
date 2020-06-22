@@ -34,3 +34,9 @@ kubectl config view
 set current context
 kubectl congid use-context <context_name>
 
+
+Ingress-Nginx config
+for Digitat ocean run this command:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/do/deploy.yaml
+this is important for intial setup. check the ingress-nginx (https://kubernetes.github.io/ingress-nginx/deploy) for more info
+

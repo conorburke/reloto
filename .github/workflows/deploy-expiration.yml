@@ -1,0 +1,27 @@
+name: deploy-expiration
+
+on:
+#   runs when a push to master (branch pulled in) and something changes in expiration
+  push:
+    branches: 
+      - master
+    paths:
+      - 'expiration/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd expiration && docker build -t conorburke/reloto-expiration .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push conorburke/reloto-expiration
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DOCTL_KEY }}
+      - run: doctl kubernetes cluster kubeconfig save reloto
+#       find the deployment name from the infra file
+      - run: kubectl rollout restart deployment reloto-expiration-depl

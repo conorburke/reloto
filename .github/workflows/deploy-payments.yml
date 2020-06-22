@@ -1,0 +1,27 @@
+name: deploy-payments
+
+on:
+#   runs when a push to master (branch pulled in) and something changes in payments
+  push:
+    branches: 
+      - master
+    paths:
+      - 'payments/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd payments && docker build -t conorburke/reloto-payments .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push conorburke/reloto-payments
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DOCTL_KEY }}
+      - run: doctl kubernetes cluster kubeconfig save reloto
+#       find the deployment name from the infra file
+      - run: kubectl rollout restart deployment reloto-payments-depl

@@ -1,7 +1,6 @@
 name: deploy-manifests
 
 on:
-#   runs when a push to master (branch pulled in) and something changes in auth
   push:
     branches: 
       - master
